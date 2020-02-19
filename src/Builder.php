@@ -21,6 +21,24 @@ class Builder {
 
 	/**
 	 *
+	 * @var DOMElement[];
+	 */
+	private $customPageElements = [];
+
+	/**
+	 *
+	 * @var DOMElement
+	 */
+	private $currentPageEl = null;
+
+		/**
+	 *
+	 * @var DOMElement
+	 */
+	private $currentRevisionEl = null;
+
+	/**
+	 *
 	 * @param string $destFilepath
 	 * @return boolean
 	 */
@@ -35,6 +53,16 @@ class Builder {
 	 */
 	public function build() {
 		$this->initDOM();
+		foreach( $this->pages as $pagename => $revisionDatas ) {
+			$this->currentPageEl = $this->dom->createElement( 'page' );
+			$this->currentPageEl->appendChild(
+				$this->dom->createElement( 'title', $pagename )
+			);
+			$this->dom->documentElement->appendChild( $this->currentPageEl );
+			foreach( $revisionDatas as $revisionData ) {
+				$this->appendRevisionElement( $revisionData );
+			}
+		}
 	}
 
 	private $mediaWikiXMLStub = <<<HERE
@@ -44,7 +72,9 @@ HERE;
 
 	private function initDOM() {
 		$this->dom = new DOMDocument();
-		$this->dom->loadXML( $this->mediaWikiXMLStub );
+		$this->dom->formatOutput = true;
+		#$this->dom->loadXML( $this->mediaWikiXMLStub );
+		$this->dom->loadXML( '<mediawiki></mediawiki>' );
 	}
 
 	/**
@@ -58,7 +88,17 @@ HERE;
 	 * @return Builder
 	 */
 	public function addRevision( $pagetitle, $wikitext, $timestamp = '', $username = '', $model = 'wikitext' , $format = 'text/x-wiki' ) {
-		$this->pages[$pagetitle];
+		if( !isset( $this->pages[$pagetitle] ) ) {
+			$this->pages[$pagetitle] = [];
+		}
+		$this->pages[$pagetitle][] = [
+			'text' => $wikitext,
+			'timestamp' => $timestamp,
+			'username' => $username,
+			'model' => $model,
+			'format' => $format
+		];
+
 		return $this;
 	}
 
@@ -69,6 +109,11 @@ HERE;
 	 * @return Builder
 	 */
 	public function addCustomPageElement( $pagetitle, DOMElement $customEl ) {
+		if( !isset( $this->customPageElements[$pagetitle] ) ) {
+			$this->customPageElements[$pagetitle] = [];
+		}
+		$this->pages[$pagetitle][] = $customEl;
+
 		return $this;
 	}
 
@@ -81,4 +126,23 @@ HERE;
 		return $this->dom->createElement( $elementName );
 	}
 
+	private function appendRevisionElement( $data ) {
+		$this->currentRevisionEl = $this->dom->createElement( 'revision' );
+
+		$this->appendRevisionEl( 'username', $data );
+		$this->appendRevisionEl( 'timestamp', $data );
+		$this->appendRevisionEl( 'model', $data );
+		$this->appendRevisionEl( 'format', $data );
+		$this->appendRevisionEl( 'text', $data );
+
+		$this->currentPageEl->appendChild( $this->currentRevisionEl );
+	}
+
+	private function appendRevisionEl( $nodeName, $data ) {
+		if( !isset( $data[$nodeName] ) || empty( $data[$nodeName] )  ) {
+			return;
+		}
+		$el = $this->dom->createElement( $nodeName, $data[$nodeName] );
+		$this->currentRevisionEl->appendChild( $el );
+	}
 }
