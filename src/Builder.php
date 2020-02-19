@@ -133,7 +133,11 @@ HERE;
 		$this->appendRevisionEl( 'timestamp', $data );
 		$this->appendRevisionEl( 'model', $data );
 		$this->appendRevisionEl( 'format', $data );
-		$this->appendRevisionEl( 'text', $data );
+
+		$textNode = $this->dom->createTextNode( $data['text'] );
+		$textEl = $this->dom->createElement( 'text' );
+		$textEl->appendChild( $textNode );
+		$this->currentRevisionEl->appendChild( $textEl );
 
 		$this->currentPageEl->appendChild( $this->currentRevisionEl );
 	}
