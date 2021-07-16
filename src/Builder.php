@@ -32,15 +32,15 @@ class Builder {
 	private $currentPageEl = null;
 
 		/**
-	 *
-	 * @var DOMElement
-	 */
+		 *
+		 * @var DOMElement
+		 */
 	private $currentRevisionEl = null;
 
 	/**
 	 *
 	 * @param string $destFilepath
-	 * @return boolean
+	 * @return bool
 	 */
 	public function buildAndSave( $destFilepath ) {
 		$this->build();
@@ -53,7 +53,7 @@ class Builder {
 	 */
 	public function build() {
 		$this->initDOM();
-		foreach( $this->pages as $pagename => $revisionDatas ) {
+		foreach ( $this->pages as $pagename => $revisionDatas ) {
 			$this->currentPageEl = $this->dom->createElement( 'page' );
 			$title = $this->dom->createElement( 'title' );
 			$content = $this->dom->createTextNode( $pagename );
@@ -62,7 +62,7 @@ class Builder {
 				$title
 			);
 			$this->dom->documentElement->appendChild( $this->currentPageEl );
-			foreach( $revisionDatas as $revisionData ) {
+			foreach ( $revisionDatas as $revisionData ) {
 				$this->appendRevisionElement( $revisionData );
 			}
 		}
@@ -84,8 +84,9 @@ class Builder {
 	 * @param strgin $format
 	 * @return Builder
 	 */
-	public function addRevision( $pagetitle, $wikitext, $timestamp = '', $username = '', $model = 'wikitext' , $format = 'text/x-wiki' ) {
-		if( !isset( $this->pages[$pagetitle] ) ) {
+	public function addRevision( $pagetitle, $wikitext, $timestamp = '', $username = '',
+		$model = 'wikitext', $format = 'text/x-wiki' ) {
+		if ( !isset( $this->pages[$pagetitle] ) ) {
 			$this->pages[$pagetitle] = [];
 		}
 		$this->pages[$pagetitle][] = [
@@ -106,7 +107,7 @@ class Builder {
 	 * @return Builder
 	 */
 	public function addCustomPageElement( $pagetitle, DOMElement $customEl ) {
-		if( !isset( $this->customPageElements[$pagetitle] ) ) {
+		if ( !isset( $this->customPageElements[$pagetitle] ) ) {
 			$this->customPageElements[$pagetitle] = [];
 		}
 		$this->pages[$pagetitle][] = $customEl;
@@ -123,6 +124,11 @@ class Builder {
 		return $this->dom->createElement( $elementName );
 	}
 
+	/**
+	 *
+	 * @param array $data
+	 * @return void
+	 */
 	private function appendRevisionElement( $data ) {
 		$this->currentRevisionEl = $this->dom->createElement( 'revision' );
 
@@ -139,8 +145,14 @@ class Builder {
 		$this->currentPageEl->appendChild( $this->currentRevisionEl );
 	}
 
+	/**
+	 *
+	 * @param string $nodeName
+	 * @param array $data
+	 * @return void
+	 */
 	private function appendRevisionEl( $nodeName, $data ) {
-		if( !isset( $data[$nodeName] ) || empty( $data[$nodeName] )  ) {
+		if ( !isset( $data[$nodeName] ) || empty( $data[$nodeName] ) ) {
 			return;
 		}
 		$el = $this->dom->createElement( $nodeName );
