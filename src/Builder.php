@@ -55,8 +55,11 @@ class Builder {
 		$this->initDOM();
 		foreach( $this->pages as $pagename => $revisionDatas ) {
 			$this->currentPageEl = $this->dom->createElement( 'page' );
+			$title = $this->dom->createElement( 'title' );
+			$content = $this->dom->createTextNode( $pagename );
+			$title->appendChild( $content );
 			$this->currentPageEl->appendChild(
-				$this->dom->createElement( 'title', $pagename )
+				$title
 			);
 			$this->dom->documentElement->appendChild( $this->currentPageEl );
 			foreach( $revisionDatas as $revisionData ) {
@@ -65,15 +68,9 @@ class Builder {
 		}
 	}
 
-	private $mediaWikiXMLStub = <<<HERE
-<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.10/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.10/ http://www.mediawiki.org/xml/export-0.10.xsd" version="0.10" xml:lang="en">
-</mediawiki>
-HERE;
-
 	private function initDOM() {
 		$this->dom = new DOMDocument();
 		$this->dom->formatOutput = true;
-		#$this->dom->loadXML( $this->mediaWikiXMLStub );
 		$this->dom->loadXML( '<mediawiki></mediawiki>' );
 	}
 
@@ -146,7 +143,9 @@ HERE;
 		if( !isset( $data[$nodeName] ) || empty( $data[$nodeName] )  ) {
 			return;
 		}
-		$el = $this->dom->createElement( $nodeName, $data[$nodeName] );
+		$el = $this->dom->createElement( $nodeName );
+		$content = $this->dom->createTextNode( $data[$nodeName] );
+		$el->appendChild( $content );
 		$this->currentRevisionEl->appendChild( $el );
 	}
 }
