@@ -90,20 +90,14 @@ class Builder {
 			$this->pages[$pagetitle] = [];
 		}
 		$modelAndFormat = $this->getDefaultModelAndFormat( $pagetitle );
-		$defaults = [
-			'timestamp' => '',
-			'username' => '',
-			'model' => $modelAndFormat['model'],
-			'format' => $modelAndFormat['format']
-		];
 
-		$this->pages[$pagetitle][] = array_merge( [
+		$this->pages[$pagetitle][] = [
 			'text' => $wikitext,
 			'timestamp' => $timestamp,
 			'username' => $username,
-			'model' => $model,
-			'format' => $format
-		], $defaults );
+			'model' => empty( $model ) ? $modelAndFormat['model'] : $model,
+			'format' => empty( $format ) ? $modelAndFormat['format'] : $format
+		];
 
 		return $this;
 	}

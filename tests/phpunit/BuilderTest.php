@@ -46,6 +46,12 @@ class BuilderTest extends TestCase {
 					[ "Coffee & Tea", "raffiné" ]
 				],
 				__DIR__ . '/data/expected2.xml'
+			],
+			'explicit-model-and-format' => [
+				[
+					[ "Some.form", "...", '', '', 'form', 'text/x-form' ]
+				],
+				__DIR__ . '/data/expected3.xml'
 			]
 		];
 	}

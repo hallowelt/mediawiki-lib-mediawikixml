@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<mediawiki>
+  <page>
+    <title>Some.form</title>
+    <revision>
+      <model>form</model>
+      <format>text/x-form</format>
+      <text>...</text>
+    </revision>
+  </page>
+</mediawiki>
