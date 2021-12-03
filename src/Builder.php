@@ -85,19 +85,78 @@ class Builder {
 	 * @return Builder
 	 */
 	public function addRevision( $pagetitle, $wikitext, $timestamp = '', $username = '',
-		$model = 'wikitext', $format = 'text/x-wiki' ) {
+		$model = '', $format = '' ) {
 		if ( !isset( $this->pages[$pagetitle] ) ) {
 			$this->pages[$pagetitle] = [];
 		}
-		$this->pages[$pagetitle][] = [
+		$modelAndFormat = $this->getDefaultModelAndFormat( $pagetitle );
+		$defaults = [
+			'timestamp' => '',
+			'username' => '',
+			'model' => $modelAndFormat['model'],
+			'format' => $modelAndFormat['format']
+		];
+
+		$this->pages[$pagetitle][] = array_merge( [
 			'text' => $wikitext,
 			'timestamp' => $timestamp,
 			'username' => $username,
 			'model' => $model,
 			'format' => $format
-		];
+		], $defaults );
 
 		return $this;
+	}
+
+	/**
+	 *
+	 * @param string $pagetitle
+	 * @return array
+	 */
+	private function getDefaultModelAndFormat( $pagetitle ) {
+		$extension = $this->getNormalExtension( $pagetitle );
+		switch ( $extension ) {
+			case 'css':
+				$model = 'css';
+				$format = 'text/css';
+				break;
+			case 'js':
+				$model = 'javascript';
+				$format = 'text/javascript';
+				break;
+			case 'json':
+				$model = 'json';
+				$format = 'text/json';
+				break;
+			case 'xml':
+					$model = 'xml';
+					$format = 'text/xml';
+					break;
+			default:
+				$model = 'wikitext';
+				$format = 'text/x-wiki';
+		}
+
+		return [
+			'model' => $model,
+			'format' => $format
+		];
+	}
+
+	/**
+	 *
+	 * @param string $pagetitle
+	 * @return string
+	 */
+	private function getNormalExtension( $pagetitle ) {
+		$extension = '';
+		$parts = explode( '.', $pagetitle );
+		if ( count( $parts ) > 1 ) {
+			$lastPart = array_pop( $parts );
+			$extension = strtolower( $lastPart );
+		}
+
+		return $extension;
 	}
 
 	/**

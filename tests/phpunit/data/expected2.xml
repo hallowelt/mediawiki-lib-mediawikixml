@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<mediawiki>
+  <page>
+     <title>Some.css</title>
+    <revision>
+      <model>css</model>
+      <format>text/css</format>
+      <text>* { display:none; }</text>
+    </revision>
+  </page>
+  <page>
+    <title>Some.js</title>
+    <revision>
+      <model>javascript</model>
+      <format>text/javascript</format>
+      <text>alert( 'Hello World' );</text>
+    </revision>
+  </page>
+  <page>
+    <title>Some.json</title>
+    <revision>
+      <model>json</model>
+      <format>text/json</format>
+      <text>{ "some": "value" }</text>
+    </revision>
+  </page>
+  <page>
+    <title>Some.xml</title>
+    <revision>
+      <model>xml</model>
+      <format>text/xml</format>
+      <text>&lt;xml&gt;&lt;element /&gt;&lt;/xml&gt;</text>
+    </revision>
+  </page>
+  <page>
+    <title>Coffee &amp; Tea</title>
+    <revision>
+      <model>wikitext</model>
+      <format>text/x-wiki</format>
+      <text>raffin&#xE9;</text>
+    </revision>
+  </page>
+</mediawiki>

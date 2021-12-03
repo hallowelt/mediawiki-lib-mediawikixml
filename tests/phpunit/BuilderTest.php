@@ -8,17 +8,45 @@ use PHPUnit\Framework\TestCase;
 class BuilderTest extends TestCase {
 
 	/**
-	 * @covers HalloWelt\MediaWiki\Lib\MediaWikiXML\Builder::build
+	 * @param array $addRevisionCalls
+	 * @param string $expectedFile
 	 * @return void
+	 * @dataProvider provideTestBuildAndSaveData
+	 * @covers HalloWelt\MediaWiki\Lib\MediaWikiXML\Builder::buildAndSave
 	 */
-	public function testBuild() {
+	public function testBuildAndSave( $addRevisionCalls, $expectedFile ) {
 		$actualFile = sys_get_temp_dir() . '/output.xml';
-		$exprectedFile = __DIR__ . '/data/expected1.xml';
-
 		$builder = new Builder();
-		$builder->addRevision( "Coffee & Tea", "raffiné" );
+		foreach ( $addRevisionCalls as $addRevisionCallArgs ) {
+			call_user_func_array( [ $builder, 'addRevision' ], $addRevisionCallArgs );
+		}
 		$builder->buildAndSave( $actualFile );
 
-		$this->assertXmlFileEqualsXmlFile( $exprectedFile, $actualFile );
+		$this->assertXmlFileEqualsXmlFile( $expectedFile, $actualFile );
+	}
+
+	/**
+	 *
+	 * @return array
+	 */
+	public function provideTestBuildAndSaveData() {
+		return [
+			'standard' => [
+				[
+					[ "Coffee & Tea", "raffiné" ]
+				],
+				__DIR__ . '/data/expected1.xml'
+			],
+			'implicit-model-and-format' => [
+				[
+					[ "Some.css", "* { display:none; }" ],
+					[ "Some.js", "alert( 'Hello World' );" ],
+					[ "Some.json", "{ \"some\": \"value\" }" ],
+					[ "Some.xml", "<xml><element /></xml>" ],
+					[ "Coffee & Tea", "raffiné" ]
+				],
+				__DIR__ . '/data/expected2.xml'
+			]
+		];
 	}
 }
