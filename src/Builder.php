@@ -111,7 +111,7 @@ class Builder {
 		$extension = $this->getNormalExtension( $pagetitle );
 		switch ( $extension ) {
 			case 'css':
-				$model = 'css';
+				$model = 'sanitized-css';
 				$format = 'text/css';
 				break;
 			case 'js':
@@ -120,12 +120,8 @@ class Builder {
 				break;
 			case 'json':
 				$model = 'json';
-				$format = 'text/json';
+				$format = 'application/json';
 				break;
-			case 'xml':
-					$model = 'xml';
-					$format = 'text/xml';
-					break;
 			default:
 				$model = 'wikitext';
 				$format = 'text/x-wiki';

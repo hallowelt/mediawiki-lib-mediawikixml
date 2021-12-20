@@ -3,7 +3,7 @@
   <page>
      <title>Some.css</title>
     <revision>
-      <model>css</model>
+      <model>sanitized-css</model>
       <format>text/css</format>
       <text>* { display:none; }</text>
     </revision>
@@ -20,16 +20,8 @@
     <title>Some.json</title>
     <revision>
       <model>json</model>
-      <format>text/json</format>
+      <format>application/json</format>
       <text>{ "some": "value" }</text>
-    </revision>
-  </page>
-  <page>
-    <title>Some.xml</title>
-    <revision>
-      <model>xml</model>
-      <format>text/xml</format>
-      <text>&lt;xml&gt;&lt;element /&gt;&lt;/xml&gt;</text>
     </revision>
   </page>
   <page>

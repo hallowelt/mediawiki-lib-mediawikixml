@@ -42,7 +42,6 @@ class BuilderTest extends TestCase {
 					[ "Some.css", "* { display:none; }" ],
 					[ "Some.js", "alert( 'Hello World' );" ],
 					[ "Some.json", "{ \"some\": \"value\" }" ],
-					[ "Some.xml", "<xml><element /></xml>" ],
 					[ "Coffee & Tea", "raffiné" ]
 				],
 				__DIR__ . '/data/expected2.xml'
