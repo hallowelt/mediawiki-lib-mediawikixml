@@ -11,7 +11,7 @@ class Builder {
 	 *
 	 * @var DOMDocument
 	 */
-	private $dom = null;
+	protected $dom = null;
 
 	/**
 	 *
@@ -21,7 +21,7 @@ class Builder {
 
 	/**
 	 *
-	 * @var DOMElement[];
+	 * @var DOMElement[]
 	 */
 	private $customPageElements = [];
 
@@ -29,7 +29,7 @@ class Builder {
 	 *
 	 * @var DOMElement
 	 */
-	private $currentPageEl = null;
+	protected $currentPageEl = null;
 
 		/**
 		 *
@@ -68,7 +68,7 @@ class Builder {
 		}
 	}
 
-	private function initDOM() {
+	protected function initDOM() {
 		$this->dom = new DOMDocument();
 		$this->dom->formatOutput = true;
 		$this->dom->loadXML( '<mediawiki></mediawiki>' );
