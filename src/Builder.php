@@ -238,7 +238,10 @@ class Builder {
 		if ( !isset( $data['text'] ) ) {
 			$data['text'] = '';
 		}
-		$this->appendRevisionEl( 'text', $this->currentRevisionEl, $data );
+		$textNode = $this->dom->createTextNode( $data['text'] );
+		$textEl = $this->dom->createElement( 'text' );
+		$textEl->appendChild( $textNode );
+		$this->currentRevisionEl->appendChild( $textEl );
 
 		if ( isset( $data['upload'] ) ) {
 			$this->appendRevisionUploadEl( $this->currentRevisionEl, $data );
