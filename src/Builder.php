@@ -266,10 +266,9 @@ class Builder {
 		$revisionElement->appendChild( $el );
 	}
 
-		/**
-	 *
-	 * @param array $data
+	/**
 	 * @param DOMElement $revisionElement
+	 * @param array $data
 	 * @return void
 	 */
 	private function appendRevisionUploadEl( $revisionElement, $data ) {
