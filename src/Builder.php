@@ -49,6 +49,17 @@ class Builder {
 	}
 
 	/**
+	 * @return void
+	 */
+	public function reset(): void {
+		$this->initDOM();
+		$this->pages = [];
+		$this->customPageElements = [];
+		$this->currentPageEl = null;
+		$this->currentRevisionEl = null;
+	}
+
+	/**
 	 * @return DOMDocument
 	 */
 	public function build() {
@@ -97,6 +108,46 @@ class Builder {
 			'username' => $username,
 			'model' => empty( $model ) ? $modelAndFormat['model'] : $model,
 			'format' => empty( $format ) ? $modelAndFormat['format'] : $format
+		];
+
+		return $this;
+	}
+
+	/**
+	 * This is not yet supported by MediaWiki
+	 *
+	 * @param string $filename
+	 * @param string $wikitext
+	 * @param string $content
+	 * @param string $timestamp
+	 * @param string $username
+	 * @param string $model
+	 * @param string $format
+	 * @return void
+	 */
+	public function addFileRevision( $filename, $wikitext, $content, $timestamp = '', $username = '',
+		$model = '', $format = ''
+	) {
+		$pagetitle = 'File:' . $filename;
+
+		if ( !isset( $this->pages[$pagetitle] ) ) {
+			$this->pages[$pagetitle] = [];
+		}
+
+		$modelAndFormat = $this->getDefaultModelAndFormat( $pagetitle );
+
+		$this->pages[$pagetitle][] = [
+			'text' => $wikitext,
+			'timestamp' => $timestamp,
+			'username' => $username,
+			'model' => empty( $model ) ? $modelAndFormat['model'] : $model,
+			'format' => empty( $format ) ? $modelAndFormat['format'] : $format,
+			'upload' => [
+				'timestamp' => $timestamp,
+				'username' => $username,
+				'filename' => $filename,
+				'contents' => base64_encode( $content )
+			]
 		];
 
 		return $this;
@@ -181,32 +232,64 @@ class Builder {
 	private function appendRevisionElement( $data ) {
 		$this->currentRevisionEl = $this->dom->createElement( 'revision' );
 
-		$this->appendRevisionEl( 'username', $data );
-		$this->appendRevisionEl( 'timestamp', $data );
-		$this->appendRevisionEl( 'model', $data );
-		$this->appendRevisionEl( 'format', $data );
+		$this->appendRevisionEl( 'username', $this->currentRevisionEl, $data );
+		$this->appendRevisionEl( 'timestamp', $this->currentRevisionEl, $data );
+		$this->appendRevisionEl( 'model', $this->currentRevisionEl, $data );
+		$this->appendRevisionEl( 'format', $this->currentRevisionEl, $data );
 
+		if ( !isset( $data['text'] ) ) {
+			$data['text'] = '';
+		}
 		$textNode = $this->dom->createTextNode( $data['text'] );
 		$textEl = $this->dom->createElement( 'text' );
 		$textEl->appendChild( $textNode );
 		$this->currentRevisionEl->appendChild( $textEl );
 
+		if ( isset( $data['upload'] ) ) {
+			$this->appendRevisionUploadEl( $this->currentRevisionEl, $data );
+		}
 		$this->currentPageEl->appendChild( $this->currentRevisionEl );
 	}
 
 	/**
 	 *
 	 * @param string $nodeName
+	 * @param DOMElement $revisionElement
 	 * @param array $data
 	 * @return void
 	 */
-	private function appendRevisionEl( $nodeName, $data ) {
+	private function appendRevisionEl( $nodeName, $revisionElement, $data ) {
 		if ( !isset( $data[$nodeName] ) || empty( $data[$nodeName] ) ) {
 			return;
 		}
 		$el = $this->dom->createElement( $nodeName );
 		$content = $this->dom->createTextNode( $data[$nodeName] );
 		$el->appendChild( $content );
-		$this->currentRevisionEl->appendChild( $el );
+		$revisionElement->appendChild( $el );
+	}
+
+	/**
+	 * @param DOMElement $revisionElement
+	 * @param array $data
+	 * @return void
+	 */
+	private function appendRevisionUploadEl( $revisionElement, $data ) {
+		$nodeName = 'upload';
+		if ( !isset( $data[$nodeName] ) || empty( $data[$nodeName] ) ) {
+			return;
+		}
+		$data = $data['upload'];
+
+		$el = $this->dom->createElement( $nodeName );
+
+		$this->appendRevisionEl( 'timestamp', $el, $data );
+		$this->appendRevisionEl( 'username', $el, $data );
+		$this->appendRevisionEl( 'filename', $el, $data );
+
+		$content = $this->dom->createElement( 'contents' );
+		$content->setAttribute( 'encoding', 'base64' );
+		$content->nodeValue = $data['contents'];
+		$el->appendChild( $content );
+		$revisionElement->appendChild( $el );
 	}
 }
