@@ -114,6 +114,8 @@ class Builder {
 	}
 
 	/**
+	 * This is not yet supported by MediaWiki
+	 *
 	 * @param string $filename
 	 * @param string $wikitext
 	 * @param string $content
