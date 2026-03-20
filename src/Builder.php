@@ -92,23 +92,30 @@ class Builder {
 	 * @param string $timestamp
 	 * @param string $username
 	 * @param string $model
-	 * @param strgin $format
+	 * @param string $format
+	 * @param array $slotData
 	 * @return Builder
 	 */
 	public function addRevision( $pagetitle, $wikitext, $timestamp = '', $username = '',
-		$model = '', $format = '' ) {
+		$model = '', $format = '', $slotData = [] ) {
 		if ( !isset( $this->pages[$pagetitle] ) ) {
 			$this->pages[$pagetitle] = [];
 		}
 		$modelAndFormat = $this->getDefaultModelAndFormat( $pagetitle );
 
-		$this->pages[$pagetitle][] = [
+		$revisionData = [
 			'text' => $wikitext,
 			'timestamp' => $timestamp,
 			'username' => $username,
 			'model' => empty( $model ) ? $modelAndFormat['model'] : $model,
 			'format' => empty( $format ) ? $modelAndFormat['format'] : $format
 		];
+
+		if ( !empty( $slotData ) ) {
+			$revisionData['content'] = $slotData;
+		}
+
+		$this->pages[$pagetitle][] = $revisionData;
 
 		return $this;
 	}
@@ -248,6 +255,11 @@ class Builder {
 		if ( isset( $data['upload'] ) ) {
 			$this->appendRevisionUploadEl( $this->currentRevisionEl, $data );
 		}
+
+		if ( isset( $data['content'] ) ) {
+			$this->appendRevisionSlotEl( $this->currentRevisionEl, $data );
+		}
+
 		$this->currentPageEl->appendChild( $this->currentRevisionEl );
 	}
 
@@ -265,6 +277,28 @@ class Builder {
 		$el = $this->dom->createElement( $nodeName );
 		$content = $this->dom->createTextNode( $data[$nodeName] );
 		$el->appendChild( $content );
+		$revisionElement->appendChild( $el );
+	}
+
+	/**
+	 * @param DOMElement $revisionElement
+	 * @param array $data
+	 * @return void
+	 */
+	private function appendRevisionSlotEl( $revisionElement, $data ) {
+		$nodeName = 'content';
+		if ( !isset( $data[$nodeName] ) || empty( $data[$nodeName] ) ) {
+			return;
+		}
+		$data = $data[$nodeName];
+
+		$el = $this->dom->createElement( $nodeName );
+
+		$this->appendRevisionEl( 'role', $el, $data );
+		$this->appendRevisionEl( 'model', $el, $data );
+		$this->appendRevisionEl( 'format', $el, $data );
+		$this->appendRevisionEl( 'text', $el, $data );
+
 		$revisionElement->appendChild( $el );
 	}
 
