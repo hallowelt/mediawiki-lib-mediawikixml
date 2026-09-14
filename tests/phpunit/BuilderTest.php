@@ -26,7 +26,6 @@ class BuilderTest extends TestCase {
 	}
 
 	/**
-	 *
 	 * @return array
 	 */
 	public function provideTestBuildAndSaveData() {

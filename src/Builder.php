@@ -8,37 +8,31 @@ use DOMElement;
 class Builder {
 
 	/**
-	 *
 	 * @var DOMDocument
 	 */
 	protected $dom = null;
 
 	/**
-	 *
 	 * @var array
 	 */
 	private $pages = [];
 
 	/**
-	 *
 	 * @var DOMElement[]
 	 */
 	private $customPageElements = [];
 
 	/**
-	 *
 	 * @var DOMElement
 	 */
 	protected $currentPageEl = null;
 
-		/**
-		 *
-		 * @var DOMElement
-		 */
+	/**
+	 * @var DOMElement
+	 */
 	private $currentRevisionEl = null;
 
 	/**
-	 *
 	 * @param string $destFilepath
 	 * @return bool
 	 */
@@ -86,7 +80,6 @@ class Builder {
 	}
 
 	/**
-	 *
 	 * @param string $pagetitle
 	 * @param string $wikitext
 	 * @param string $timestamp
@@ -161,7 +154,6 @@ class Builder {
 	}
 
 	/**
-	 *
 	 * @param string $pagetitle
 	 * @return array
 	 */
@@ -192,7 +184,6 @@ class Builder {
 	}
 
 	/**
-	 *
 	 * @param string $pagetitle
 	 * @return string
 	 */
@@ -208,7 +199,6 @@ class Builder {
 	}
 
 	/**
-	 *
 	 * @param string $pagetitle
 	 * @param DOMElement $customEl
 	 * @return Builder
@@ -223,7 +213,6 @@ class Builder {
 	}
 
 	/**
-	 *
 	 * @param string $elementName
 	 * @return DOMElement
 	 */
@@ -232,7 +221,6 @@ class Builder {
 	}
 
 	/**
-	 *
 	 * @param array $data
 	 * @return void
 	 */
@@ -269,7 +257,6 @@ class Builder {
 	}
 
 	/**
-	 *
 	 * @param string $nodeName
 	 * @param DOMElement $revisionElement
 	 * @param array $data
