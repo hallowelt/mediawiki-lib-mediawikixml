@@ -3,15 +3,18 @@
 namespace HalloWelt\MediaWiki\Lib\MediaWikiXML\Tests;
 
 use HalloWelt\MediaWiki\Lib\MediaWikiXML\Builder;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass( Builder::class )]
 class BuilderTest extends TestCase {
 
+	#[DataProvider( 'provideTestBuildAndSaveData' )]
 	/**
 	 * @param array $addRevisionCalls
 	 * @param string $expectedFile
 	 * @return void
-	 * @dataProvider provideTestBuildAndSaveData
 	 * @covers HalloWelt\MediaWiki\Lib\MediaWikiXML\Builder::buildAndSave
 	 */
 	public function testBuildAndSave( $addRevisionCalls, $expectedFile ) {
@@ -28,7 +31,7 @@ class BuilderTest extends TestCase {
 	/**
 	 * @return array
 	 */
-	public function provideTestBuildAndSaveData() {
+	public static function provideTestBuildAndSaveData() {
 		return [
 			'standard' => [
 				[
