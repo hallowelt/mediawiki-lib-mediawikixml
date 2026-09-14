@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<mediawiki>
+  <page>
+    <title>Coffee &amp; Tea</title>
+    <revision>
+      <contributor>
+        <username>Foobar</username>
+      </contributor>
+      <model>wikitext</model>
+      <format>text/x-wiki</format>
+      <text>raffin&#xE9;</text>
+    </revision>
+  </page>
+</mediawiki>
