@@ -51,6 +51,12 @@ class BuilderTest extends TestCase {
 					[ "Some.form", "...", '', '', 'form', 'text/x-form' ]
 				],
 				__DIR__ . '/data/expected3.xml'
+			],
+			'username-wrapped-in-contributor' => [
+				[
+					[ "Coffee & Tea", "raffiné", '', 'Foobar' ]
+				],
+				__DIR__ . '/data/expected4.xml'
 			]
 		];
 	}

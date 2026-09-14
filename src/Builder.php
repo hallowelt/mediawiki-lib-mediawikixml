@@ -239,7 +239,12 @@ class Builder {
 	private function appendRevisionElement( $data ) {
 		$this->currentRevisionEl = $this->dom->createElement( 'revision' );
 
-		$this->appendRevisionEl( 'username', $this->currentRevisionEl, $data );
+		// Username must be wrapped in <contributor> per MediaWiki's import schema.
+		if ( isset( $data['username'] ) && !empty( $data['username'] ) ) {
+			$contributorEl = $this->dom->createElement( 'contributor' );
+			$this->appendRevisionEl( 'username', $contributorEl, $data );
+			$this->currentRevisionEl->appendChild( $contributorEl );
+		}
 		$this->appendRevisionEl( 'timestamp', $this->currentRevisionEl, $data );
 		$this->appendRevisionEl( 'model', $this->currentRevisionEl, $data );
 		$this->appendRevisionEl( 'format', $this->currentRevisionEl, $data );
