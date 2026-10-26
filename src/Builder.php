@@ -18,9 +18,16 @@ class Builder {
 	private $pages = [];
 
 	/**
-	 * @var DOMElement[]
+	 * @var array<string, DOMElement[]>
 	 */
 	private $customPageElements = [];
+
+	/**
+	 * Owns elements from createCustomPageElement(); the build DOM does not exist before build().
+	 *
+	 * @var DOMDocument|null
+	 */
+	private $customElementFactory = null;
 
 	/**
 	 * @var DOMElement
@@ -58,7 +65,11 @@ class Builder {
 	 */
 	public function build() {
 		$this->initDOM();
-		foreach ( $this->pages as $pagename => $revisionDatas ) {
+		$pages = $this->pages;
+		foreach ( array_keys( $this->customPageElements ) as $pagename ) {
+			$pages[$pagename] ??= [];
+		}
+		foreach ( $pages as $pagename => $revisionDatas ) {
 			$this->currentPageEl = $this->dom->createElement( 'page' );
 			$title = $this->dom->createElement( 'title' );
 			$content = $this->dom->createTextNode( $pagename );
@@ -67,6 +78,9 @@ class Builder {
 				$title
 			);
 			$this->dom->documentElement->appendChild( $this->currentPageEl );
+			foreach ( $this->customPageElements[$pagename] ?? [] as $customEl ) {
+				$this->currentPageEl->appendChild( $this->dom->importNode( $customEl, true ) );
+			}
 			foreach ( $revisionDatas as $revisionData ) {
 				$this->appendRevisionElement( $revisionData );
 			}
@@ -199,15 +213,15 @@ class Builder {
 	}
 
 	/**
+	 * Adds a custom child element to a page. It is written directly after <title>,
+	 * before the revisions. Every call adds one more element.
+	 *
 	 * @param string $pagetitle
-	 * @param DOMElement $customEl
+	 * @param DOMElement $customEl Usually created by createCustomPageElement()
 	 * @return Builder
 	 */
 	public function addCustomPageElement( $pagetitle, DOMElement $customEl ) {
-		if ( !isset( $this->customPageElements[$pagetitle] ) ) {
-			$this->customPageElements[$pagetitle] = [];
-		}
-		$this->pages[$pagetitle][] = $customEl;
+		$this->customPageElements[$pagetitle][] = $customEl;
 
 		return $this;
 	}
@@ -217,7 +231,8 @@ class Builder {
 	 * @return DOMElement
 	 */
 	public function createCustomPageElement( $elementName ) {
-		return $this->dom->createElement( $elementName );
+		$this->customElementFactory ??= new DOMDocument();
+		return $this->customElementFactory->createElement( $elementName );
 	}
 
 	/**

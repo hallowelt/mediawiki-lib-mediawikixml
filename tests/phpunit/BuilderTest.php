@@ -62,4 +62,26 @@ class BuilderTest extends TestCase {
 			]
 		];
 	}
+
+	/**
+	 * @covers HalloWelt\MediaWiki\Lib\MediaWikiXML\Builder::addCustomPageElement
+	 * @covers HalloWelt\MediaWiki\Lib\MediaWikiXML\Builder::createCustomPageElement
+	 * @return void
+	 */
+	public function testCustomPageElement() {
+		$builder = new Builder();
+		$builder->addRevision( 'Alpha', 'a' );
+		$el = $builder->createCustomPageElement( 'custom' );
+		$el->setAttribute( 'type', 'x' );
+		$child = $builder->createCustomPageElement( 'child' );
+		$child->setAttribute( 'name', 'y' );
+		$el->appendChild( $child );
+		$builder->addCustomPageElement( 'Alpha', $el );
+		$builder->addCustomPageElement( 'Beta', $builder->createCustomPageElement( 'empty' ) );
+
+		$actualFile = tempnam( sys_get_temp_dir(), 'bld' );
+		$builder->buildAndSave( $actualFile );
+		$this->assertXmlFileEqualsXmlFile( __DIR__ . '/data/expected5.xml', $actualFile );
+		unlink( $actualFile );
+	}
 }
