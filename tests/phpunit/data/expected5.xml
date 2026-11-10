@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<mediawiki>
+  <page>
+    <title>Alpha</title>
+    <custom type="x">
+      <child name="y"/>
+    </custom>
+    <revision>
+      <model>wikitext</model>
+      <format>text/x-wiki</format>
+      <text>a</text>
+    </revision>
+  </page>
+  <page>
+    <title>Beta</title>
+    <empty/>
+  </page>
+</mediawiki>
